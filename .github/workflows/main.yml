@@ -24,7 +24,7 @@ jobs:
     - name: Download Ruffle
       run: |
         mkdir -p assets/www/js
-        wget -O ruffle.zip [Ruffle_Release_URL]  # Replace [Ruffle_Release_URL] with the actual URL
+        wget -O ruffle.zip https://github.com/ruffle-rs/ruffle # Replace [Ruffle_Release_URL] with the actual URL
         unzip -j ruffle.zip 'ruffle/*' -d assets/www/js
         rm ruffle.zip
 
