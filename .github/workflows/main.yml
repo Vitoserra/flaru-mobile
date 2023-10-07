@@ -1,0 +1,48 @@
+name: Build and Releasee
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.x'  # Adjust to your Flutter version
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Download Ruffle
+      run: |
+        mkdir -p assets/www/js
+        wget -O ruffle.zip [Ruffle_Release_URL]  # Replace [Ruffle_Release_URL] with the actual URL
+        unzip -j ruffle.zip 'ruffle/*' -d assets/www/js
+        rm ruffle.zip
+
+    - name: Build
+      run: flutter build web
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/web/**
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
